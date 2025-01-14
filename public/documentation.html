@@ -6,10 +6,96 @@
     </head>
     <body>
         <h1>Documentation for MyFlix</h1>
+        <h2>Endpoints</h2>
 
-1. Project title: MyFlix API
+        <table>
+            <tr>
+              <th>Task</th>
+              <th>URL</th>
+              <th>Description</th>
+              <th>HTTP Method</th>
+              <th>Query Parameters</th>
+              <th>Request Body Format</th>
+              <th>Response Body Format</th>
+            </tr>
+            <tr>
+              <td>Get all movies</td>
+              <td>Get movie by title</td>
+              <td>Get Movies by genre</td>
+              <td>Get Movies by director's name</td>
+              <td>Create a New User</td>
+              <td>Update a user's name</td>
+              <td>Add a favorite movie</td>
+              <td>Remove a favorite movie</td>
+              <td>Delete a user</td>
+            </tr>
+            <tr>
+                <td>/movies</td>
+                <td>/movies/:Title</td>
+                <td>/movies/genre/:genreTitle</td>
+                <td>/movies/directors/:directorName</td>
+                <td>/users</td>
+                <td>/users/:id</td>
+                <td>/users/:id/:MovieTitle</td>
+                <td>/users/:id/:MovieTitle</td>
+                <td>/users/:id</td>
+              </tr>
+            <tr>
+              <td>Returns a list of all the movies</td>
+              <td>Returns infomation on the specified movie</td>
+              <td>Returns info on a genre</td>
+              <td>Returns info on a director</td>
+              <td>Creates a new user profile</td>
+              <td>Users can update their profile information</td>
+              <td>Users can update their favorite movie</td>
+              <td>Users can remove their favorite movie</td>
+              <td>/User can delete their profile</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>GET</td>
+                <td>GET</td>
+                <td>GET</td>
+                <td>POST</td>
+                <td>PUT</td>
+                <td>POST</td>
+                <td>DELETE</td>
+                <td>DELETE</td>
+              </tr>
+              <tr>
+                <td>None</td>
+                <td>title</td>
+                <td>name</td>
+                <td>name</td>
+                <td>name</td>
+                <td>user id</td>
+                <td>user id</td>
+                <td>user id</td>
+                <td>user id</td>
+              </tr>
+              <tr>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>None</td>
+                <td>JSON object with updated user info</td>
+                <td>JSON object with movie title</td>
+                <td>None</td>
+                <td>None</td>
+              </tr>
+              <tr>
+                <td>JSON of movie array</td>
+                <td>JSON object of movie</td>
+                <td>JSON object of genre name</td>
+                <td>JSON object of director</td>
+                <td>JSON object of user details</td>
+                <td>Confirmation message</td>
+                <td>Confirmation message</td>
+                <td>Confirmation message</td>
+                <td>Confirmation message</td>
+              </tr>
+          </table>
 
-2. Project Description: MyFlix is a REST API (API refers to an Application Programming Interface, and a REST API is an API which uses http requests).
-This API is a database which will store information about different movies.
 </body>
 </html>
