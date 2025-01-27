@@ -41,3 +41,5 @@ Timestamp: Tue Jan 07 2025 15:26:48 GMT+0100 (Central European Standard Time)
 ::1 - - [24/Jan/2025:14:16:11 +0000] "DELETE /users/ HTTP/1.1" 404 148 "-" "PostmanRuntime/7.43.0"
 ::1 - - [24/Jan/2025:14:16:13 +0000] "DELETE /users HTTP/1.1" 404 147 "-" "PostmanRuntime/7.43.0"
 ::1 - - [24/Jan/2025:14:22:58 +0000] "PUT /users/helenwolfie/movies/678e3a6e864c280e43304b75 HTTP/1.1" 404 188 "-" "PostmanRuntime/7.43.0"
+::1 - - [27/Jan/2025:09:37:55 +0000] "GET /movies/directors/Nick%20Park HTTP/1.1" 404 167 "-" "PostmanRuntime/7.43.0"
+::1 - - [27/Jan/2025:10:25:10 +0000] "GET /movies/directors/Nick%20Park HTTP/1.1" 404 167 "-" "PostmanRuntime/7.43.0"
