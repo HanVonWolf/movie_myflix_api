@@ -1,27 +1,33 @@
 const express = require('express');
-const app = express();
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const uuid = require('uuid');
-
-app.use(bodyParser.json());
-
-app.use(express.urlencoded({ extended: true }));
-
+const fs = require('fs');
+const path = require('path');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
+const passport = require('passport');
+
+const uuid = require('uuid');
 
 const Movies = Models.Movie;
 const Users = Models.User;
-const Genre = Models.Genre;
-const Directors = Models.Director
 
-mongoose.connect('mongodb://localhost:27017/myflixDB') /*, { 
-useNewUrlParser: true, useUnifiedTopology: true });*/
+const app = express();
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan('combined', {stream: accessLogStream}));
 
 let auth = require('./auth')(app);
-const passport = require('passport');
 require('./passport');
+
+mongoose.connect('mongodb://localhost:27017/myflixDB',
+ { 
+useNewUrlParser: true, 
+useUnifiedTopology: true }
+);
+
 
 // UPDATE
 // UPDATE USER INFO BY USERNAME
@@ -126,16 +132,16 @@ app.post('/users', async (req, res) => {
 
 // READ
 // GET ALL MOVIES
-app.get('/movies/', (req, res) => {
-  Movies.find()
-      .then((movies) => {
-        res.status(201).json(movies);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error: " + err);
-      });
-  })
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  await Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
 
 // GET ALL USERS
 app.get('/users', async (req, res) => {
@@ -202,13 +208,7 @@ app.get("/movies/:Title", async (req, res) => {
       });
   });
 
-const morgan = require('morgan'),
-fs = require('fs'), 
-path = require('path');
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
-
-// setup the logger
-app.use(morgan('combined', {stream: accessLogStream}));
 
   // GET requests
   app.get('/', (req, res) => {
