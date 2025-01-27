@@ -188,13 +188,13 @@ app.get("/movies/:Title", async (req, res) => {
     //!GET DIRECTOR BY NAME
     app.get('/movies/directors/:directorName', async (req, res) => {
       const directorName = req.params.name.trim().toLowerCase(); // Cleaned-up director name from URL
-      await Movies.find({
+      await Movies.findOne({
           'director.name': {
             $regex: new RegExp(directorName, 'i')
           }
         }) 
       .then((movie) => {
-          res.json(director);
+          res.json(movie.director);
       })
       .catch((err) => {
           console.error(err);
