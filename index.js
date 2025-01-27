@@ -5,171 +5,202 @@ const uuid = require('uuid');
 
 app.use(bodyParser.json());
 
-let users = [
-  { 
-    id: 1,
-    name: "Hannah",
-    favoriteMovies: ["Dune: Part Two"]
-  },
-  { 
-    id: 2,
-    name: "Jochen",
-    favoriteMovies: ["Ghostlight"]
-  }
-];
+app.use(express.urlencoded({ extended: true }));
 
-let movies = [
-  {
-    "Title":"Dune: Part Two",
-    "Description":"A noble family becomes embroiled in a war for control over the galaxy's most valuable asset.",
-    "Genre": {
-      "Name":"Sci-Fi",
-      "Description":"Science fiction is a genre of speculative fiction which typically deals with imaginative and futuristic concepts such as advanced science and technology",
-    },
-    "Director": {
-      "Name":"Denis Villeneuve",
-      "Bio":"Denis Villeneuve is a French Canadian film director and writer. He was born in 1967, in Trois-Rivières, Québec, Canada. He started his career as a filmmaker at the National Film Board of Canada. He is best known for his feature films Arrival (2016), Sicario (2015), Prisoners (2013), Enemy (2013), and Incendies (2010). He is married to Tanya Lapointe.",
-      "Birth":"1967.0"
-    },
-    "ImageURL":"https://www.imdb.com/title/tt15239678/mediaviewer/rm1391346433/?ref_=tt_ov_i",
-  },
-  {
-    "Title":"The Brutalist",
-    "Description":"When a visionary architect and his wife flee post-war Europe in 1947 to rebuild their legacy and witness the birth of modern United States, their lives are changed forever by a mysterious, wealthy client.",
-    "Genre": {
-      "Name":"Drama",
-      "Description":"In film and television, drama is a category or genre of narrative fiction (or semi-fiction) intended to be more serious than humorous in tone.",
-    },
-    "Director": {
-      "Name":"Brady Corbet",
-      "Bio":"American actor Brady James Monson Corbet was born on August 17, 1988, in Scottsdale, AZ. Brady made his film debut as Mason Freeland in 2003's thirteen.",
-      "Birth":"1988.0"
-    },
-    "ImageURL":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQxLQplL4otquzTgJfqv0vxFxYXC49zwUnuTWkb2iqi5dqWk5IF",
-  },
-  {
-    "Title":"Ghostlight",
-    "Description":"When a construction worker unexpectedly joins a local theater's production of Romeo and Juliet, the drama onstage starts to mirror his own life.",
-    "Genre": {
-      "Name":"Comedy",
-      "Description":"Comedy is a genre that consists of discourses or works intended to be humorous or amusing by inducing laughter",
-    },
-    "Director": {
-      "Name":"Kelly O'Sullivan",
-      "Bio":"Kelly O'Sullivan (born 1983) is an American actress, screenwriter, director, and producer.",
-      "Birth":"1983.0"
-    },
-    "ImageURL":"https://www.imdb.com/title/tt30321095/mediaviewer/rm3288822273/?ref_=tt_ov_i",
-  },
-];
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+const Genre = Models.Genre;
+const Directors = Models.Director
+
+mongoose.connect('mongodb://localhost:27017/myflixDB') /*, { 
+useNewUrlParser: true, useUnifiedTopology: true });*/
 
 // UPDATE
-app.put('/users/:id', (req, res) => {
-  const id = req.params.id;
-  const updatedUser = req.body;
-
-let user = users.find(user => user.id == id);
-
-if (user) {
-  user.name = updatedUser.name;
-  res.status(200).json(user);
-} else {
-  res.status(400).send('no such user!')
-}
-})
-
-// POST
-app.post('/users/:id/:movieTitle', (req, res) => {
-  const { id, movieTitle } = req.params;
-
-let user = users.find(user => user.id == id);
-
-if (user) {
-  user.favoriteMovies.push(movieTitle); 
-  res.status(200).send('Your movie has been added!');
-} else {
-  res.status(400).send('no such user!')
-}
-})
-
-// DELETE
-app.delete('/users/:id/:movieTitle', (req, res) => {
-  const { id, movieTitle } = req.params;
-
-let user = users.find(user => user.id == id);
-
-if (user) {
-  user.favoriteMovies = user.favoriteMovies.filter(title => title !== movieTitle);
-  res.status(200).send('Movie has been removed!');
-} else {
-  res.status(400).send('no such movie!')
-}
-})
-
-app.delete('/users/:id', (req, res) => {
-  const { id } = req.params;
-
-let user = users.find(user => user.id == id);
-
-if (user) {
-users = users.filter(user => user.id != id);
-res.status(200).send('user has been deleted');
-} else {
-  res.status(400).send('no such user!')
-}
-})
-
-// CREATE
-app.post('/users', (req, res) => {
-  const newUser = req.body;
-
-  if (newUser.name) {
-    newUser.id = uuid.v4();
-    users.push(newUser);
-    res.status(201).json(newUser)
-  } else {
-    res.status(400).send('please enter a name')
-  }
-})
-
-// READ
-app.get('/movies/', (req, res) => {
-res.status(200).json(movies)
-})
-
-app.get('/movies/:title', (req, res) => {
-  const title = req.params.title;
-  const movie = movies.find(movie => movie.Title === title);
-
-  if (movie) {
-    res.status(200).json(movie);
-  } else {
-    res.status(400).send('no such movie!')
-  }
+// UPDATE USER INFO BY USERNAME
+app.put('/users/:Username', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, 
+    { 
+      $set: {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true })
+  .then((updatedUser) => {
+    res.json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
   })
 
-  app.get('/movies/genre/:genreName', (req, res) => {
-    const genreName = req.params.genreName;
-    const genre = movies.find(movie => movie.Genre.Name === genreName).Genre;
-  
-    if (genre) {
-      res.status(200).json(genre);
-    } else {
-      res.status(400).send('no such genre!')
-    }
-   
-    })
+});
 
-    app.get('/movies/directors/:directorName', (req, res) => {
-      const { directorName } = req.params;
-      const director = movies.find(movie => movie.Director.Name === directorName).Director;
-    
-      if (director) {
-        res.status(200).json(director);
+// !UPDATE A FAVOURITE MOVIE
+app.post('/users/:Username/movies/:MovieID', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username}, {
+      $push: { FavouriteMovies: req.params.MovieID }
+  },
+  { new: true })
+  .then((updatedUser) => {
+      res.json(updatedUser);
+  })
+  .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+  });   
+});
+
+
+// DELETE
+//!DELETE A FAVOURITE MOVIE
+app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+      $pull: { FavoriteMovies: req.params.MovieID }
+  },
+  { new: true })
+  .then((updatedUser) => {
+      res.json(updatedUser);
+  })
+  .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+  });
+})
+
+// DELETE A USER BY USERNAME
+app.delete('/users/:Username', async (req, res) => {
+  await Users.findOneAndDelete({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
       } else {
-        res.status(400).send('no such director!')
+        res.status(200).send(req.params.Username + ' was deleted.');
       }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+
+// CREATE
+//CREATE NEW USER
+app.post('/users', async (req, res) => {
+  await Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user); 
+          })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+// READ
+// GET ALL MOVIES
+app.get('/movies/', (req, res) => {
+  Movies.find()
+      .then((movies) => {
+        res.status(201).json(movies);
       })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  })
+
+// GET ALL USERS
+app.get('/users', async (req, res) => {
+  await Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// GET USER BY USERNAME
+app.get('/users/:Username', async (req, res) => {
+  await Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// GET MOVIE BY TITLE
+app.get("/movies/:Title", async (req, res) => {
+  await Movies.findOne({ Title: req.params.Title })
+  .then((movie) => {
+    res.json(movie);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send("Error: " + err);
+  });
+});
+
+  //GET GENRE BY GENRE NAME
+  app.get('/movies/genre/:genre', async (req, res) => {
+    const genreName = req.params.name.trim().toLowerCase(); // Cleaned-up genre name from URL
+    await Movies.find({
+        'genre.name': {
+          $regex: new RegExp(genreName, 'i')
+        }
+      })
+    .then((movie) => {
+        res.json(genre);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    })
+});
+
+    //!GET DIRECTOR BY NAME
+    app.get('/movies/directors/:directorName', async (req, res) => {
+      const directorName = req.params.name.trim().toLowerCase(); // Cleaned-up director name from URL
+      await Movies.find({
+          'director.name': {
+            $regex: new RegExp(directorName, 'i')
+          }
+        }) 
+      .then((movie) => {
+          res.json(director);
+      })
+      .catch((err) => {
+          console.error(err);
+          res.status(500).send('Error: ' + err);
+      })
+  })
 
 const morgan = require('morgan'),
 fs = require('fs'), 
