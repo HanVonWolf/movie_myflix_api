@@ -5,7 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
-const passport = require('passport');
 
 const uuid = require('uuid');
 
@@ -20,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined', {stream: accessLogStream}));
 
 let auth = require('./auth')(app);
+const passport = require('passport');
 require('./passport');
 
 mongoose.connect('mongodb://localhost:27017/myflixDB',
