@@ -17,6 +17,11 @@ const Directors = Models.Director
 
 mongoose.connect('mongodb://localhost:27017/myflixDB') /*, { 
 useNewUrlParser: true, useUnifiedTopology: true });*/
+app.use(bodyParser.urlencoded({ extended: true }));
+
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
 
 // UPDATE
 // UPDATE USER INFO BY USERNAME
@@ -186,21 +191,16 @@ app.get("/movies/:Title", async (req, res) => {
 });
 
     //!GET DIRECTOR BY NAME
-    app.get('/movies/directors/:directorName', async (req, res) => {
-      const directorName = req.params.name.trim().toLowerCase(); // Cleaned-up director name from URL
-      await Movies.findOne({
-          'director.name': {
-            $regex: new RegExp(directorName, 'i')
-          }
-        }) 
+    app.get('/movies/:Director', async (req, res) => {
+      await Movies.findOne({Director: req.params.Director })
       .then((movie) => {
-          res.json(movie.director);
+          res.json(Director);
       })
       .catch((err) => {
           console.error(err);
           res.status(500).send('Error: ' + err);
-      })
-  })
+      });
+  });
 
 const morgan = require('morgan'),
 fs = require('fs'), 
