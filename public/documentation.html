@@ -14,7 +14,6 @@
               <th>URL</th>
               <th>Description</th>
               <th>HTTP Method</th>
-              <th>Query Parameters</th>
               <th>Request Body Format</th>
               <th>Response Body Format</th>
             </tr>
@@ -32,8 +31,8 @@
             <tr>
                 <td>/movies</td>
                 <td>/movies/:Title</td>
-                <td>/movies/genre/:genreTitle</td>
-                <td>/movies/directors/:directorName</td>
+                <td>/movies/genre/:genre</td>
+                <td>/movies/director/:Name</td>
                 <td>/users</td>
                 <td>/users/:id</td>
                 <td>/users/:id/:MovieTitle</td>
@@ -42,14 +41,14 @@
               </tr>
             <tr>
               <td>Returns a list of all the movies</td>
-              <td>Returns infomation on the specified movie</td>
-              <td>Returns info on a genre</td>
-              <td>Returns info on a director</td>
+              <td>Returns infomation on the searched for movie</td>
+              <td>Returns infomation on a genre</td>
+              <td>Returns infomation on a director</td>
               <td>Creates a new user profile</td>
               <td>Users can update their profile information</td>
               <td>Users can update their favorite movie</td>
               <td>Users can remove their favorite movie</td>
-              <td>/User can delete their profile</td>
+              <td>User can delete their profile</td>
             </tr>
             <tr>
                 <td>GET</td>
@@ -64,36 +63,133 @@
               </tr>
               <tr>
                 <td>None</td>
-                <td>title</td>
-                <td>name</td>
-                <td>name</td>
-                <td>name</td>
-                <td>user id</td>
-                <td>user id</td>
-                <td>user id</td>
-                <td>user id</td>
+                <td>User must search for the title of the movie
+                  Example: The Notebook
+                </td>
+                <td>User must search for a genre
+                  Example: "Drama"
+                </td>
+                <td>User must search for a director
+                  Example: "Nick Park"
+                </td>
+                <td>JSON object with required fields (username, password, email and birthday)
+                  Example:
+                  "Username": "WolfendenPaul",
+                  "Password": "qwerty",
+                  "Eamil": "paulwolfenden@outlook.com",
+                  "Birthday": "1965-02-21"</td>
+                <td>JSON Object with new user deatils
+                  Example:
+                    "newUsername": "new_Kick",
+                    "newEmail": "new_Kick@example.com"
+                </td>
+                <td>JSON Object with movie ID
+                  Example: 
+                  "FavouriteMovie": "678e3a6e864c280e43304b75"
+                </td>
+                <td>JSON Object with movie ID
+                  Example: 
+                  "FavouriteMovie": "678e3a6e864c280e43304b75"</td>
+                <td>JSON object with required fields (username, password, email and birthday)
+                  Example:
+                  "Username": "WolfendenPaul",
+                  "Password": "qwerty",
+                  "Eamil": "paulwolfenden@outlook.com",
+                  "Birthday": "1965-02-21"</td>
               </tr>
               <tr>
-                <td>None</td>
-                <td>None</td>
-                <td>None</td>
-                <td>None</td>
-                <td>None</td>
-                <td>JSON object with updated user info</td>
-                <td>JSON object with movie title</td>
-                <td>None</td>
-                <td>None</td>
-              </tr>
-              <tr>
-                <td>JSON of movie array</td>
-                <td>JSON object of movie</td>
-                <td>JSON object of genre name</td>
+                <td>A JSON array of all movies in MyFlix
+                  Example:
+                    "Genre": {
+                        "Name": "Romance",
+                        "Description": "The primary focuses of a romance film is on the relationship and romantic love between two people, typically with an emotionally satisfying and optimistic ending."
+                    },
+                    "Director": {
+                        "Name": "Nick Cassavetes",
+                        "Bio": "Nicholas David Rowland Cassavetes is an American actor, director, and writer. He has directed such films as She's So Lovely, John Q., The Notebook, Alpha Dog, and My Sister's Keeper.",
+                        "Birth": "1959"
+                    },
+                    "Actors": [],
+                    "_id": "678e3c96864c280e43304b78",
+                    "Title": "The Notebook",
+                    "Description": "The film stars Ryan Gosling and Rachel McAdams as a young couple who fall in love in the 1940s. Their story is read from a notebook in the present day by an elderly man, telling the tale to a fellow nursing home resident.",
+                    "ImagePath": "thenotebook.png",
+                    "Featured": false
+                </td>
+                <td>JSON object of specific movie
+                  Example: 
+                    "Genre": {
+                        "Name": "Romance",
+                        "Description": "The prrimary focuses of a romance film is on the relationship and romantic love between two people, typically with an emotionally satisfying and optimistic ending."
+                    },
+                    "Director": {
+                        "Name": "Nick Cassavetes",
+                        "Bio": "Nicholas David Rowland Cassavetes is an American actor, director, and writer. He has directed such films as She's So Lovely, John Q., The Notebook, Alpha Dog, and My Sister's Keeper.",
+                        "Birth": "1959"
+                    },
+                    "Actors": [],
+                    "_id": "678e3c96864c280e43304b78",
+                    "Title": "The Notebook",
+                    "Description": "The film stars Ryan Gosling and Rachel McAdams as a young couple who fall in love in the 1940s. Their story is read from a notebook in the present day by an elderly man, telling the tale to a fellow nursing home resident.",
+                    "ImagePath": "thenotebook.png",
+                    "Featured": false
+                </td>
+                <td>JSON object of genre and movies with that genre
+                  Example: "Genre": {
+                    "Name": "Romance",
+                    "Description": "The prrimary focuses of a romance film is on the relationship and romantic love between two people, typically with an emotionally satisfying and optimistic ending."
+                },
+                "Director": {
+                    "Name": "Nick Cassavetes",
+                    "Bio": "Nicholas David Rowland Cassavetes is an American actor, director, and writer. He has directed such films as She's So Lovely, John Q., The Notebook, Alpha Dog, and My Sister's Keeper.",
+                    "Birth": "1959"
+                },
+                "Actors": [],
+                "_id": "678e3c96864c280e43304b78",
+                "Title": "The Notebook",
+                "Description": "The film stars Ryan Gosling and Rachel McAdams as a young couple who fall in love in the 1940s. Their story is read from a notebook in the present day by an elderly man, telling the tale to a fellow nursing home resident.",
+                "ImagePath": "thenotebook.png",
+                "Featured": false
+                </td>
                 <td>JSON object of director</td>
-                <td>JSON object of user details</td>
-                <td>Confirmation message</td>
-                <td>Confirmation message</td>
-                <td>Confirmation message</td>
-                <td>Confirmation message</td>
+                <td>JSON object of new user details
+                  Example:
+                    "_id": "678e4355864c280e43304b81",
+                    "Username": "WolfendenPaul",
+                    "Password": "qwerty",
+                    "Eamil": "paulwolfenden@outlook.com",
+                    "Birthday": "1965-02-21T00:00:00.000Z",
+                    "FavouriteMovie": [
+                        "678e3b9d864c280e43304b77"
+                    ]
+                </td>
+                <td>User data is updated to include new infomation
+                  Example:
+                    "_id": "674b3f901e813c4615888e5c",
+                    "username": "new_Kick",
+                    "password": "strongerPassword",
+                    "email": "new_Kick@example.com",
+                    "birthday": "2024-11-30"
+                </td>
+                <td>Movie is added to user's favourite movies and JSON Object is returned
+                  Example:
+                    "_id": "678e4355864c280e43304b81",
+                    "Username": "WolfendenPaul",
+                    "Password": "qwerty",
+                    "Eamil": "paulwolfenden@outlook.com",
+                    "Birthday": "1965-02-21T00:00:00.000Z",
+                    "FavouriteMovie": ["678e3b9d864c280e43304b77"]
+                </td>
+                <td>Favourite movie is removed from user's profile
+                  Example:
+                  "_id": "678e4355864c280e43304b81",
+                  "Username": "WolfendenPaul",
+                  "Password": "qwerty",
+                  "Eamil": "paulwolfenden@outlook.com",
+                  "Birthday": "1965-02-21T00:00:00.000Z",
+                  "FavouriteMovie": []
+                </td>
+                <td>Confirmation message that user has been successfully removed</td>
               </tr>
           </table>
 
