@@ -10,17 +10,18 @@ const uuid = require('uuid');
 
 const Movies = Models.Movie;
 const Users = Models.User;
+const Genre = Models.Genre;
+const Directors = Models.Director
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined', {stream: accessLogStream}));
 
-let auth = require('./auth')(app);
+let auth = require('./auth.js')(app);
 const passport = require('passport');
-require('./passport');
+require('./passport.js');
 
 mongoose.connect('mongodb://localhost:27017/myflixDB',
  { 
@@ -37,7 +38,7 @@ app.put('/users/:Username', async (req, res) => {
       $set: {
       Username: req.body.Username,
       Password: req.body.Password,
-      Email: req.body.Email,
+      Eamil: req.body.Eamil,
       Birthday: req.body.Birthday
     }
   },
@@ -52,10 +53,10 @@ app.put('/users/:Username', async (req, res) => {
 
 });
 
-// !UPDATE A FAVOURITE MOVIE
+// UPDATE A FAVOURITE MOVIE
 app.post('/users/:Username/movies/:MovieID', async (req, res) => {
   await Users.findOneAndUpdate({ Username: req.params.Username}, {
-      $push: { FavouriteMovies: req.params.MovieID }
+      $push: { FavouriteMovie: req.params.MovieID }
   },
   { new: true })
   .then((updatedUser) => {
@@ -69,10 +70,10 @@ app.post('/users/:Username/movies/:MovieID', async (req, res) => {
 
 
 // DELETE
-//!DELETE A FAVOURITE MOVIE
+//DELETE A FAVOURITE MOVIE
 app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
   await Users.findOneAndUpdate({ Username: req.params.Username }, {
-      $pull: { FavoriteMovies: req.params.MovieID }
+      $pull: { FavouriteMovie: req.params.MovieID }
   },
   { new: true })
   .then((updatedUser) => {
@@ -113,7 +114,7 @@ app.post('/users', async (req, res) => {
           .create({
             Username: req.body.Username,
             Password: req.body.Password,
-            Email: req.body.Email,
+            Eamil: req.body.Eamil,
             Birthday: req.body.Birthday
           })
           .then((user) =>{res.status(201).json(user); 
@@ -197,8 +198,13 @@ app.get("/movies/:Title", async (req, res) => {
 });
 
     //!GET DIRECTOR BY NAME
-    app.get('/movies/:Director', async (req, res) => {
-      await Movies.findOne({Director: req.params.Director })
+    app.get('/movies/director/:name', async (req, res) => {
+      const directorName = req.params.name.trim().toLowerCase();
+      await Movies.find({
+        'director.name': {
+         $regex: new RegExp(directorName, 'i')
+      } 
+    })
       .then((movie) => {
           res.json(Director);
       })
@@ -209,6 +215,7 @@ app.get("/movies/:Title", async (req, res) => {
   });
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
+app.use(morgan('combined', {stream: accessLogStream}));
 
   // GET requests
   app.get('/', (req, res) => {
