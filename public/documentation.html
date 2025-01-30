@@ -32,7 +32,7 @@
                 <td>/movies</td>
                 <td>/movies/:Title</td>
                 <td>/movies/genre/:genre</td>
-                <td>/movies/director/:Name</td>
+                <td>/movies/directors/:Name</td>
                 <td>/users</td>
                 <td>/users/:id</td>
                 <td>/users/:id/:MovieTitle</td>
@@ -151,7 +151,24 @@
                 "ImagePath": "thenotebook.png",
                 "Featured": false
                 </td>
-                <td>JSON object of director</td>
+                <td>JSON object of director
+                  Example:
+                  "Genre": {
+                    "Name": "Animated",
+                    "Description": "Animation is a method in which pictures are manipulated to appear as moving images. In traditional animation, images are drawn or painted by hand on transparent celluloid sheets to be photographed and exhibited on film."
+                },
+                "Director": {
+                    "Name": "Nick Park",
+                    "Bio": "Nicholas Wulstan Park CBE RDI is an English filmmaker and animator who created Wallace and Gromit, Creature Comforts, Chicken Run, Shaun the Sheep, and Early Man.",
+                    "Birth": "1958"
+                },
+                "Actors": [],
+                "_id": "678e3b08864c280e43304b76",
+                "Title": "Wallace and Gromit: Vengeance most fowl",
+                "Description": "Gromit's concern that Wallace has become over-dependent on his inventions proves justified, when Wallace invents a smart gnome that seems to develop a mind of its own.",
+                "ImagePath": "wallaceandgromitvengeance.png",
+                "Featured": true
+                </td>
                 <td>JSON object of new user details
                   Example:
                     "_id": "678e4355864c280e43304b81",
