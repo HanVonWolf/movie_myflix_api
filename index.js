@@ -19,9 +19,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 
-let auth = require('./auth.js')(app);
+let auth = require('./auth')(app);
 const passport = require('passport');
-require('./passport.js');
+require('./passport');
 
 mongoose.connect('mongodb://localhost:27017/myflixDB',
  { 
@@ -198,21 +198,17 @@ app.get("/movies/:Title", async (req, res) => {
 });
 
     //!GET DIRECTOR BY NAME
-    app.get('/movies/director/:name', async (req, res) => {
-      const directorName = req.params.name.trim().toLowerCase();
-      await Movies.find({
-        'director.name': {
-         $regex: new RegExp(directorName, 'i')
-      } 
-    })
+
+    app.get('/movies/directors/:directorName', async (req, res) => {
+      await Movies.findOne({ "Director.Name": req.params.directorName })
       .then((movie) => {
-          res.json(Director);
+          res.json(movie);
       })
       .catch((err) => {
           console.error(err);
           res.status(500).send('Error: ' + err);
-      });
-  });
+      })
+  })
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
 app.use(morgan('combined', {stream: accessLogStream}));
