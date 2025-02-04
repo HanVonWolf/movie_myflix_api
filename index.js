@@ -15,7 +15,7 @@ const cors = require('cors');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://git.heroku.com/hannahs-myflix.git'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://git.heroku.com/hannahs-myflix.git', 'https://hannahs-myflix-03787a843e96.herokuapp.com/'];
 
 app.use(cors({
   origin: (origin, callback) => {
