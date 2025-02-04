@@ -1,24 +1,21 @@
-const morgan = require('morgan');
 const express = require('express');
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const uuid = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
-
-const uuid = require('uuid');
-
-const Movies = Models.Movie;
-const Users = Models.User;
-const Genre = Models.Genre;
-const Directors = Models.Director
+const { check, validationResult } = require('express-validator');
 
 const app = express();
 
 const cors = require('cors');
-app.use(cors());
 
-/* let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://git.heroku.com/hannahs-myflix.git'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -29,21 +26,18 @@ app.use(cors({
     }
     return callback(null, true);
   }
-})); */
+}));
 
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-const { check, validationResult } = require('express-validator');
+const Movies = Models.Movie;
+const Users = Models.User;
+const Genre = Models.Genre;
+const Directors = Models.Director
 
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
-app.use(morgan('combined', {stream: accessLogStream}));
-
+//LOCAL
 /*mongoose.connect('mongodb://localhost:27017/myflixDB',
  { 
 useNewUrlParser: true, 
@@ -51,6 +45,15 @@ useUnifiedTopology: true }
 );*/
 
 mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+app.use(express.urlencoded({ extended: true }));
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
+app.use(morgan('combined', {stream: accessLogStream}));
+
+  // GET requests
+  app.get('/', (req, res) => {
+    res.send('Welcome to MyFlix!');
+  });
 
 // UPDATE
 // UPDATE USER INFO BY USERNAME
@@ -240,10 +243,6 @@ app.get('/movies/genre/:genreName', passport.authenticate('jwt', { session: fals
       })
   })
 
-  // GET requests
-  app.get('/', (req, res) => {
-    res.send('Welcome to MyFlix!');
-  });
 
   app.use('/documentation.html', express.static('public'));
 
