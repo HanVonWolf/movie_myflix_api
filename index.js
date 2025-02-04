@@ -42,12 +42,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/myflixDB',
+/*mongoose.connect('mongodb://localhost:27017/myflixDB',
  { 
 useNewUrlParser: true, 
 useUnifiedTopology: true }
-);
+);*/
 
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // UPDATE
 // UPDATE USER INFO BY USERNAME
