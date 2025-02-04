@@ -15,7 +15,9 @@ const cors = require('cors');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://git.heroku.com/hannahs-myflix.git', 'https://hannahs-myflix-03787a843e96.herokuapp.com/'];
+app.use(cors());
+
+/*let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://git.heroku.com/hannahs-myflix.git', 'https://hannahs-myflix-03787a843e96.herokuapp.com/'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -26,7 +28,7 @@ app.use(cors({
     }
     return callback(null, true);
   }
-}));
+}));*/
 
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -57,7 +59,18 @@ app.use(morgan('combined', {stream: accessLogStream}));
 
 // UPDATE
 // UPDATE USER INFO BY USERNAME
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put('/users/:Username',
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Eamil', 'Email does not appear to be valid').isEmail()
+  ], passport.authenticate('jwt', { session: false }), async (req, res) => {
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
   if(req.user.Username !== req.params.Username){
       return res.status(400).send('Permission denied');
   }
@@ -66,7 +79,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
       {
           Username: req.body.Username,
           Password: req.body.Password,
-          Email: req.body.Email,
+          Eamil: req.body.Email,
           Birthday: req.body.Birthday
       }
   },
@@ -79,6 +92,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
           res.status(500).send('Error: ' + err);
       })
 });
+
 
 // UPDATE A FAVOURITE MOVIE
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
