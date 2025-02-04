@@ -1,5 +1,5 @@
-const express = require('express');
 const morgan = require('morgan');
+const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
@@ -41,6 +41,8 @@ const { check, validationResult } = require('express-validator');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
+app.use(morgan('combined', {stream: accessLogStream}));
 
 /*mongoose.connect('mongodb://localhost:27017/myflixDB',
  { 
@@ -238,16 +240,9 @@ app.get('/movies/genre/:genreName', passport.authenticate('jwt', { session: fals
       })
   })
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
-app.use(morgan('combined', {stream: accessLogStream}));
-
   // GET requests
   app.get('/', (req, res) => {
     res.send('Welcome to MyFlix!');
-  });
-  
-  app.get('/movies', (req, res) => {
-    res.json(topMovies);
   });
 
   app.use('/documentation.html', express.static('public'));
