@@ -145,8 +145,8 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 // CREATE
 //CREATE NEW USER
-app.post('/users', 
-  [    
+app.post('/signup', // <--- Changed from '/users' to '/signup'
+  [
     check('Username', 'Username is required').isLength({min: 5}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
@@ -170,7 +170,7 @@ app.post('/users',
             Eamil: req.body.Eamil,
             Birthday: req.body.Birthday
           })
-          .then((user) =>{res.status(201).json(user); 
+          .then((user) =>{res.status(201).json(user);
           })
         .catch((error) => {
           console.error(error);
