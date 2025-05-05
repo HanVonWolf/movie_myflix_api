@@ -145,12 +145,12 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 // CREATE
 //CREATE NEW USER
-app.post('/signup', // <--- Changed from '/users' to '/signup'
+app.post('/signup',
   [
     check('Username', 'Username is required').isLength({min: 5}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
-    check('Eamil', 'Email does not appear to be valid').isEmail()
+    check('Email', 'Email does not appear to be valid').isEmail() // <-- Corrected 'Eamil' to 'Email'
   ], async (req, res) => {
     let errors = validationResult(req);
 
@@ -167,7 +167,7 @@ app.post('/signup', // <--- Changed from '/users' to '/signup'
           .create({
             Username: req.body.Username,
             Password: hashedPassword,
-            Eamil: req.body.Eamil,
+            Email: req.body.Email, // <-- Corrected 'Eamil' to 'Email'
             Birthday: req.body.Birthday
           })
           .then((user) =>{res.status(201).json(user);
