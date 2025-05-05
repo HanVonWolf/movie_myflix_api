@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
+/*const bodyParser = require('body-parser');*/
 const uuid = require('uuid');
 const fs = require('fs');
 const path = require('path');
@@ -12,10 +12,21 @@ const app = express();
 
 const cors = require('cors');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+/*app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));*/
 
 app.use(cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  console.log('Middleware: Request received. Method:', req.method, 'Path:', req.path);
+  if (req.method === 'POST' || req.method === 'PUT') {
+      console.log('Middleware: Request Body:', req.body); // Log the body for POST/PUT requests
+  }
+  next();
+});
 
 /*let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://git.heroku.com/hannahs-myflix.git', 'https://hannahs-myflix-03787a843e96.herokuapp.com/'];
 
@@ -30,9 +41,12 @@ app.use(cors({
   }
 }));*/
 
-let auth = require('./auth')(app);
+
 const passport = require('passport');
+app.use(passport.initialize()); 
 require('./passport');
+
+let auth = require('./auth')(app);
 
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -48,7 +62,7 @@ useUnifiedTopology: true }
 
 mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use(express.urlencoded({ extended: true }));
+/*app.use(express.urlencoded({ extended: true }));*/
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
 app.use(morgan('combined', {stream: accessLogStream}));
 
