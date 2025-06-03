@@ -25,10 +25,22 @@ let movieSchema = mongoose.Schema({
     FavouriteMovie: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
   });
 
+/**
+ * converts user password into hashed format using bcrypt.js
+ * @function hashPassword
+ * @param {string} password as input by user
+ * @returns {string} hashed @password of user input
+ */
   userSchema.statics.hashPassword = (password) => {
     return bcrypt.hashSync(password, 10);
   };
   
+  /**
+ * validates user password by comparing it with the stored hashed password
+ * @function validatePassword
+ * @param {string} password to be validated
+ * @returns {string} validated @password
+ */
   userSchema.methods.validatePassword = function(password) {
     return bcrypt.compareSync(password, this.Password);
   };
