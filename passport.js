@@ -16,8 +16,8 @@ let Users = Models.User,
 passport.use(
   new LocalStrategy(
     {
-      usernameField: 'username', // Ensure this matches the field name in your request body
-      passwordField: 'password', // Ensure this matches the field name in your request body
+      usernameField: 'Username', // Ensure this matches the field name in your request body
+      passwordField: 'Password', // Ensure this matches the field name in your request body
     },
     async (username, password, callback) => {
       // --- Add Logs Here ---
